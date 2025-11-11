@@ -9,18 +9,32 @@
 </head>
 <body>
   <div class="container">
-    <h1>📱 QRコードチェックイン</h1>
-    
-    <div id="reader" style="width:100%; max-width:500px; margin:0 auto;"></div>
-    
-    <div id="result" style="display:none; margin-top:20px;">
-      <h2 id="message"></h2>
-      <div id="participant-info"></div>
+    <!-- チェックイン画面 -->
+    <div id="checkin-screen">
+      <h1>📱 QRコードチェックイン</h1>
+      
+      <div id="reader" style="width:100%; max-width:500px; margin:20px auto;"></div>
+      
+      <div class="button-group">
+        <a href="index.html" class="btn-back">← トップに戻る</a>
+      </div>
     </div>
     
-    <button id="restart-btn" style="display:none; margin-top:20px;">
-      次の参加者をスキャン
-    </button>
+    <!-- チェックイン結果画面 -->
+    <div id="result-screen" style="display:none;">
+      <h1 id="result-title"></h1>
+      
+      <div id="result-message" class="info-box"></div>
+      
+      <div class="button-group">
+        <button id="restart-btn" class="btn-primary">
+          次の参加者をスキャン
+        </button>
+        <a href="index.html" class="btn-secondary">
+          トップに戻る
+        </a>
+      </div>
+    </div>
   </div>
   
   <script src="js/checkin.js"></script>

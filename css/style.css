@@ -273,3 +273,45 @@ h2 {
     padding: 12px 20px;
   }
 }
+
+/* ========================================
+   QRコードスキャナー
+======================================== */
+#reader {
+  border: 3px solid #667eea;
+  border-radius: 15px;
+  overflow: hidden;
+}
+
+#reader video {
+  width: 100%;
+  height: auto;
+}
+
+/* ========================================
+   結果画面
+======================================== */
+#result-title {
+  font-size: 32px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+#result-message {
+  background: #f8f9fa;
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+#result-message p {
+  margin: 10px 0;
+  font-size: 18px;
+}
+
+.button-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
