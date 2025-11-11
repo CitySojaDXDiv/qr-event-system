@@ -2,7 +2,6 @@
 // 設定
 // ========================================
 const GAS_URL = "https://script.google.com/macros/s/AKfycbzuykr6KseMM4wFZDHyIA8L8cKrFKKtAFcqYTdO2qnZctR0Vz0GU0Zp0qR4OMsQ4j0/exec";
-// ↑ Google Apps Script のデプロイURLに置き換えてください
 
 // ========================================
 // 初期化
@@ -13,23 +12,21 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ========================================
-// イベント一覧取得
+// イベント一覧取得（JSONP）
 // ========================================
 async function loadEvents() {
   try {
-    const response = await fetch(`${GAS_URL}?action=getEvents`);
-    const result = await response.json();
+    const result = await jsonpRequest(GAS_URL, { action: "getEvents" });
     
     const select = document.getElementById("event-select");
     select.innerHTML = '<option value="">イベントを選択してください</option>';
     
     if (result.success && result.events) {
       result.events.forEach(event => {
-        // 「受付中」のイベントのみ表示
         if (event.status === "受付中") {
           const option = document.createElement("option");
           option.value = event.eventId;
-          option.textContent = `${event.eventName}（${formatDate(event.eventDate)}）`;
+          option.textContent = `${event.eventName}（${event.eventDate}）`;
           select.appendChild(option);
         }
       });
@@ -49,12 +46,10 @@ function setupFormSubmit() {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
     
-    // ボタンを無効化（二重送信防止）
     const submitBtn = form.querySelector('button[type="submit"]');
     submitBtn.disabled = true;
     submitBtn.textContent = "登録中...";
     
-    // フォームデータ取得
     const formData = {
       action: "register",
       eventId: document.getElementById("event-select").value,
@@ -66,22 +61,11 @@ function setupFormSubmit() {
     };
     
     try {
-      // Google Apps Script に送信
-      const response = await fetch(GAS_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(formData)
-      });
-      
-      const result = await response.json();
+      const result = await jsonpRequest(GAS_URL, formData);
       
       if (result.success) {
-        // 登録成功
         showCompleteScreen(result, formData);
       } else {
-        // 登録失敗
         alert("登録に失敗しました: " + result.message);
         submitBtn.disabled = false;
         submitBtn.textContent = "登録する";
@@ -96,24 +80,46 @@ function setupFormSubmit() {
 }
 
 // ========================================
+// JSONP リクエスト
+// ========================================
+function jsonpRequest(url, params) {
+  return new Promise((resolve, reject) => {
+    const callbackName = 'jsonpCallback' + Date.now();
+    const script = document.createElement('script');
+    
+    window[callbackName] = (data) => {
+      delete window[callbackName];
+      document.body.removeChild(script);
+      resolve(data);
+    };
+    
+    const queryString = Object.keys(params)
+      .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+      .join('&');
+    
+    script.src = `${url}?${queryString}&callback=${callbackName}`;
+    script.onerror = () => {
+      delete window[callbackName];
+      document.body.removeChild(script);
+      reject(new Error('JSONP request failed'));
+    };
+    
+    document.body.appendChild(script);
+  });
+}
+
+// ========================================
 // 登録完了画面表示
 // ========================================
 function showCompleteScreen(result, formData) {
-  // フォームを非表示
   document.getElementById("register-form").style.display = "none";
-  
-  // 完了画面を表示
   document.getElementById("register-complete").style.display = "block";
   
-  // 登録情報を表示
   document.getElementById("receipt-no").textContent = result.receiptNo;
   document.getElementById("display-name").textContent = formData.name;
   document.getElementById("display-party-size").textContent = formData.partySize;
   
-  // QRコード生成
   generateQRCode(result.qrData);
-  
-  // ダウンロードボタン設定
   setupDownloadButton();
 }
 
@@ -122,7 +128,7 @@ function showCompleteScreen(result, formData) {
 // ========================================
 function generateQRCode(qrData) {
   const qrcodeContainer = document.getElementById("qrcode");
-  qrcodeContainer.innerHTML = ""; // 既存のQRコードをクリア
+  qrcodeContainer.innerHTML = "";
   
   new QRCode(qrcodeContainer, {
     text: qrData,
@@ -130,7 +136,7 @@ function generateQRCode(qrData) {
     height: 300,
     colorDark: "#000000",
     colorLight: "#ffffff",
-    correctLevel: QRCode.CorrectLevel.H // 高精度
+    correctLevel: QRCode.CorrectLevel.H
   });
 }
 
@@ -144,10 +150,7 @@ function setupDownloadButton() {
     const canvas = document.querySelector("#qrcode canvas");
     
     if (canvas) {
-      // Canvas を画像に変換
       const image = canvas.toDataURL("image/png");
-      
-      // ダウンロードリンク作成
       const link = document.createElement("a");
       link.href = image;
       link.download = `qrcode_${document.getElementById("receipt-no").textContent}.png`;
@@ -156,15 +159,4 @@ function setupDownloadButton() {
       alert("QRコードの生成に失敗しました。");
     }
   });
-}
-
-// ========================================
-// ユーティリティ：日付フォーマット
-// ========================================
-function formatDate(dateString) {
-  const date = new Date(dateString);
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  return `${year}年${month}月${day}日`;
 }
