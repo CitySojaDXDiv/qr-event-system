@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>参加者登録</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- 登録フォーム -->
+    <div id="register-form">
+      <h1>📝 参加者登録</h1>
+      
+      <form id="registration-form">
+        <!-- イベント選択 -->
+        <div class="form-group">
+          <label for="event-select">イベント選択 <span class="required">*</span></label>
+          <select id="event-select" name="eventId" required>
+            <option value="">読み込み中...</option>
+          </select>
+        </div>
+        
+        <!-- 氏名 -->
+        <div class="form-group">
+          <label for="name">氏名 <span class="required">*</span></label>
+          <input type="text" id="name" name="name" placeholder="山田太郎" required>
+        </div>
+        
+        <!-- フリガナ -->
+        <div class="form-group">
+          <label for="furigana">フリガナ <span class="required">*</span></label>
+          <input type="text" id="furigana" name="furigana" placeholder="ヤマダタロウ" required>
+        </div>
+        
+        <!-- メールアドレス -->
+        <div class="form-group">
+          <label for="email">メールアドレス <span class="required">*</span></label>
+          <input type="email" id="email" name="email" placeholder="example@example.com" required>
+        </div>
+        
+        <!-- 電話番号 -->
+        <div class="form-group">
+          <label for="phone">電話番号 <span class="required">*</span></label>
+          <input type="tel" id="phone" name="phone" placeholder="090-1234-5678" required>
+        </div>
+        
+        <!-- 参加人数 -->
+        <div class="form-group">
+          <label for="party-size">参加人数 <span class="required">*</span></label>
+          <input type="number" id="party-size" name="partySize" min="1" max="10" value="1" required>
+        </div>
+        
+        <!-- 送信ボタン -->
+        <button type="submit" class="btn-primary">
+          登録する
+        </button>
+      </form>
+      
+      <a href="index.html" class="btn-back">← トップに戻る</a>
+    </div>
+    
+    <!-- 登録完了画面 -->
+    <div id="register-complete" style="display:none;">
+      <h1>✅ 登録完了</h1>
+      <p class="success-message">イベントへの登録が完了しました！</p>
+      
+      <div class="info-box">
+        <h2>📋 登録情報</h2>
+        <p><strong>受付番号：</strong><span id="receipt-no"></span></p>
+        <p><strong>お名前：</strong><span id="display-name"></span></p>
+        <p><strong>参加人数：</strong><span id="display-party-size"></span>名</p>
+      </div>
+      
+      <div class="qr-box">
+        <h2>📱 QRコード</h2>
+        <p>当日は、このQRコードを受付でご提示ください。</p>
+        <div id="qrcode"></div>
+        <p class="qr-note">※スクリーンショットを保存するか、このページをブックマークしてください。</p>
+      </div>
+      
+      <div class="button-group">
+        <button id="download-qr-btn" class="btn-primary">
+          QRコードをダウンロード
+        </button>
+        <a href="index.html" class="btn-secondary">
+          トップに戻る
+        </a>
+      </div>
+    </div>
+  </div>
+  
+  <script src="js/register.js"></script>
+</body>
+</html>

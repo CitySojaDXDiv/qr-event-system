@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QRコードチェックイン</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://unpkg.com/html5-qrcode"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>📱 QRコードチェックイン</h1>
+    
+    <div id="reader" style="width:100%; max-width:500px; margin:0 auto;"></div>
+    
+    <div id="result" style="display:none; margin-top:20px;">
+      <h2 id="message"></h2>
+      <div id="participant-info"></div>
+    </div>
+    
+    <button id="restart-btn" style="display:none; margin-top:20px;">
+      次の参加者をスキャン
+    </button>
+  </div>
+  
+  <script src="js/checkin.js"></script>
+</body>
+</html>
