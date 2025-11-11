@@ -6,12 +6,36 @@ const GAS_URL = "https://script.google.com/macros/s/AKfycbzuykr6KseMM4wFZDHyIA8L
 let html5QrCode;
 
 // ========================================
-// 初期化
+// 初期化（修正版）
 // ========================================
 document.addEventListener("DOMContentLoaded", () => {
   startScanner();
   setupRestartButton();
+  setupManualCheckin(); // 追加
 });
+
+// ========================================
+// 手動チェックイン
+// ========================================
+function setupManualCheckin() {
+  const form = document.getElementById("manual-checkin-form");
+  
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    
+    const receiptNo = document.getElementById("manual-receipt-no").value.trim();
+    
+    if (receiptNo) {
+      // スキャナーを停止
+      if (html5QrCode) {
+        html5QrCode.stop();
+      }
+      
+      // チェックイン処理
+      await checkIn(receiptNo);
+    }
+  });
+}
 
 // ========================================
 // QRコードスキャナー起動

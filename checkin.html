@@ -14,6 +14,17 @@
       <h1>📱 QRコードチェックイン</h1>
       
       <div id="reader" style="width:100%; max-width:500px; margin:20px auto;"></div>
+ 
+   <!-- 手動入力フォーム -->
+  <div class="manual-checkin">
+    <h2>または、受付番号を入力</h2>
+    <form id="manual-checkin-form">
+      <div class="form-group">
+        <input type="text" id="manual-receipt-no" placeholder="受付番号（例：20251111-1234）" required>
+      </div>
+      <button type="submit" class="btn-primary">チェックイン</button>
+    </form>
+  </div>
       
       <div class="button-group">
         <a href="index.html" class="btn-back">← トップに戻る</a>

@@ -109,7 +109,7 @@ function jsonpRequest(url, params) {
 }
 
 // ========================================
-// 登録完了画面表示
+// 登録完了画面表示（修正版）
 // ========================================
 function showCompleteScreen(result, formData) {
   document.getElementById("register-form").style.display = "none";
@@ -118,6 +118,21 @@ function showCompleteScreen(result, formData) {
   document.getElementById("receipt-no").textContent = result.receiptNo;
   document.getElementById("display-name").textContent = formData.name;
   document.getElementById("display-party-size").textContent = formData.partySize;
+  
+  // メール送信結果を表示
+  if (result.emailSent) {
+    const emailNotice = document.createElement("p");
+    emailNotice.style.color = "green";
+    emailNotice.style.fontWeight = "bold";
+    emailNotice.textContent = `✅ QRコードを ${formData.email} に送信しました。`;
+    document.querySelector(".info-box").appendChild(emailNotice);
+  } else {
+    const emailNotice = document.createElement("p");
+    emailNotice.style.color = "red";
+    emailNotice.style.fontWeight = "bold";
+    emailNotice.textContent = "⚠️ メール送信に失敗しました。QRコードをダウンロードしてください。";
+    document.querySelector(".info-box").appendChild(emailNotice);
+  }
   
   generateQRCode(result.qrData);
   setupDownloadButton();
